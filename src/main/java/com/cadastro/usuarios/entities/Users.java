@@ -1,14 +1,17 @@
 package com.cadastro.usuarios.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Users {
+@Table(name = "user_tb")
+public class Users implements Serializable {
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +19,10 @@ public class Users {
     private String name;
     private String phone;
     private String email;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Tarefas> tarefas = new ArrayList<>();
 
     public Users(){
     }
@@ -53,6 +60,14 @@ public class Users {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Tarefas> getTarefas(){
+        return tarefas;
+    }
+
+    public void setTarefas(List<Tarefas> tarefas) {
+        this.tarefas = tarefas;
     }
 
     @Override
