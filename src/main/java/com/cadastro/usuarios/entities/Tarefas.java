@@ -1,13 +1,15 @@
 package com.cadastro.usuarios.entities;
 
 import com.cadastro.usuarios.entities.enums.Status;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
-public class Tarefas{
+@Table(name = "tarefas_db")
+public class Tarefas implements Serializable {
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,14 +18,19 @@ public class Tarefas{
     private String descricao;
     private Integer status;
 
+    @JoinColumn(name = "client_id")
+    @ManyToOne
+    private Users user;
+
     public Tarefas(){
     }
 
-    public Tarefas(Long id, String tarefa, String descricao, Status status){
+    public Tarefas(Long id, Users user, String tarefa, String descricao, Status status){
         this.id = id;
         this.tarefa = tarefa;
         this.descricao = descricao;
         setStatus(status);
+        this.user = user;
     }
 
     public Long getId() {
@@ -58,5 +65,25 @@ public class Tarefas{
         if (status != null){
             this.status = status.getCode();
         }
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Tarefas tarefas = (Tarefas) o;
+        return Objects.equals(id, tarefas.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
